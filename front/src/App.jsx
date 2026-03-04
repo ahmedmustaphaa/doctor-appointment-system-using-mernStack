@@ -10,7 +10,7 @@ import Myprofile from './pages/Myprofile'
 import Myappointment from './pages/Myappointment'
 import Appointment from './pages/Appointment'
 import Footer from './component/Footer'
-import Ahmed from './pages/ahmed'
+
 import { Toaster } from "react-hot-toast";
 import { useShareContext } from './context/AppContext'
 
@@ -39,7 +39,7 @@ function App() {
           <Route path='/doctors/:speciality' element={<Doctors/>} />
           <Route path='/about' element={<About/>} />
           <Route path='/contact' element={<Contact/>} />
-          <Route path='/ahmed' element={<Ahmed/>} />
+   
 
           {/* Protected Routes */}
           <Route
