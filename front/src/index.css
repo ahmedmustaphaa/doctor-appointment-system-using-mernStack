@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+html {
+  scroll-behavior: smooth;
+}
+
+/* colors.css */
+:root {
+  /* Primary Colors */
+  --color-primary: #4A90E2;
+  --color-primary-light: #E6F0FA;
+
+  /* Secondary Colors */
+  --color-secondary: #F5F5F5;
+  --color-secondary-dark: #333333;
+
+  /* Feedback Colors */
+  --color-success: #28A745;
+  --color-error: #DC3545;
+  --color-warning: #FFC107;
+
+  /* Accents */
+  --color-accent: #FFEEE0;
+}
+
+/* Classes */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-light { background-color: var(--color-primary-light); }
+
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-secondary-dark { background-color: var(--color-secondary-dark); }
+
+.bg-success { background-color: var(--color-success); }
+.bg-error { background-color: var(--color-error); }
+.bg-warning { background-color: var(--color-warning); }
+
+.bg-accent { background-color: var(--color-accent); }
+
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary-dark); }
+.text-success { color: var(--color-success); }
+.text-error { color: var(--color-error); }
+.text-warning { color: var(--color-warning); }
+.text-accent { color: var(--color-accent); }
+
+body {
+  font-family: "Outfit", sans-serif;
+background-color: #F2FCF4;
+  color: #333333;
+}
+.auth-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  outline: none;
+}
+
+.auth-input::placeholder {
+  color: #9ca3af;
+}
+
+.auth-input:focus {
+  border-color: #5f6fff;
+}
+
+.error {
+  font-size: 13px;
+  color: #f87171;
+  margin-top: 4px;
+}
