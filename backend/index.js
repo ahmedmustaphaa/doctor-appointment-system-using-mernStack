@@ -6,25 +6,27 @@ import cors from 'cors';
 import { cloudinaryConfig } from './config/cloudinary.js';
 import DoctorRoute from './routes/DoctorRoute.js';
 import AdminRoute from './routes/AdminRoute.js';
+
 dotenv.config();
+
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
-
 cloudinaryConfig(); 
+
+// Routes
 app.use('/api/user', userRouter);
 app.use('/api/admin', DoctorRoute);
-app.use("/api/adminRoute", AdminRoute);
+app.use('/api/adminRoute', AdminRoute);
+
+// Test route
 app.get('/', (req, res) => {
   res.send('Hello, World!');
-});   
-
-
-
-
-await connectDb() 
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
 });
+
+// Connect to DB
+await connectDb(); // لو Vercel شغال بـ Node 18+ يدعم await top-level
+
+export default app;
