@@ -5,54 +5,80 @@ import { motion } from "framer-motion";
 
 function Menuspecialist() {
   return (
-    <section className="w-[90%] max-w-7xl mx-auto py-20">
+    <section dir="rtl" className="relative w-full py-28 bg-[#fafdfc] overflow-hidden">
       
-      {/* Header */}
-      <div className="text-center mb-14">
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-400 bg-clip-text text-transparent">
-          Find by Speciality
-        </h1>
+      {/* عناصر خلفية ناعمة متناسقة مع الهيدر */}
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-50/60 rounded-full blur-[100px] -z-10" />
+      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-cyan-50/60 rounded-full blur-[80px] -z-10" />
 
-        <p className="text-gray-500 mt-4 text-lg">
-          Browse trusted doctors easily and book your appointment in seconds.
-        </p>
-      </div>
-
-      {/* Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-        {specialityData.map((item, index) => (
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        {/* هيدر متناسق وأنيق */}
+        <div className="text-center mb-24">
           <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.05 }}
-            viewport={{ once: true }}
+            className="inline-block px-4 py-1 mb-4 rounded-full bg-blue-100/50 border border-blue-200"
           >
-            <Link
-              to={`/doctors/${item.speciality}`}
-              onClick={() => window.scrollTo(0, 0)}
-              className="group relative bg-white/70 backdrop-blur-xl border border-gray-200 rounded-3xl p-6 flex flex-col items-center text-center shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3"
-            >
-              
-              {/* Glow Effect */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/10 to-cyan-400/10 opacity-0 group-hover:opacity-100 transition duration-500"></div>
-
-              <div className="relative z-10">
-                <div className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full shadow-md group-hover:scale-110 transition duration-500">
-                  <img
-                    src={item.image}
-                    alt={item.speciality}
-                    className="w-12 h-12 object-contain"
-                  />
-                </div>
-
-                <h2 className="mt-5 text-gray-700 font-semibold text-lg group-hover:text-blue-600 transition">
-                  {item.speciality}
-                </h2>
-              </div>
-            </Link>
+            <span className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em]">رعاية تثق بها</span>
           </motion.div>
-        ))}
+          
+          <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight">
+            استكشف <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">التخصصات</span> الطبية
+          </h2>
+          <div className="w-20 h-1.5 bg-gradient-to-l from-blue-600 to-cyan-400 mx-auto rounded-full mb-8" />
+        </div>
+
+        {/* الكروت: ستايل "الألواح العائمة" باللون الأبيض الفاخر */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {specialityData.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              viewport={{ once: true }}
+            >
+              <Link
+                to={`/doctors/${item.speciality}`}
+                onClick={() => window.scrollTo(0, 0)}
+                className="group relative block"
+              >
+                {/* جسم الكارت: أبيض، بحدود خفيفة، وظل عميق عند الهوفر */}
+                <div className="relative bg-white/70 backdrop-blur-xl border border-slate-100 rounded-[2.5rem] p-10 flex flex-col items-center shadow-[0_15px_40px_rgba(0,0,0,0.02)] group-hover:shadow-[0_30px_60px_rgba(6,182,212,0.12)] group-hover:border-blue-100 transition-all duration-500 overflow-hidden">
+                  
+                  {/* تأثير الضوء الداخلي (Inner Glow) */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-[2] transition-transform duration-700" />
+
+                  {/* حاوية الأيقونة - زاوية (Modern Radius) */}
+                  <div className="relative mb-8">
+                    <div className="absolute inset-0 bg-blue-500/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-24 h-24 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center group-hover:bg-white group-hover:shadow-md group-hover:-rotate-6 transition-all duration-500">
+                      <img
+                        src={item.image}
+                        alt={item.speciality}
+                        className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* المحتوى */}
+                  <h3 className="text-2xl font-black text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">
+                    {item.speciality}
+                  </h3>
+                  <p className="text-slate-500 text-center text-sm font-medium leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    احجز موعدك الآن مع أفضل أطباء {item.speciality} المعتمدين لدينا.
+                  </p>
+
+                  {/* سهم الانتقال */}
+                  <div className="mt-2 flex items-center justify-center w-12 h-12 rounded-full bg-slate-50 group-hover:bg-blue-600 text-slate-400 group-hover:text-white transition-all duration-500">
+                    <span className="text-xl">←</span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

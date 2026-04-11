@@ -1,190 +1,158 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ChevronDown, Menu, X } from 'lucide-react';
-import { assets } from '../assets/assets_admin/assets';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { 
+  IconHome, IconStethoscope, IconInfoCircle, 
+  IconPhone, IconUserCircle, IconLogout, IconPlus, IconMenu2, IconX 
+} from '@tabler/icons-react';
 import { useShareContext } from '../context/AppContext';
 
 function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // حالة فتح القائمة في الموبايل
   const location = useLocation();
   const { token, setToken } = useShareContext();
   const nav = useNavigate();
+  const { scrollY } = useScroll();
+
+  // انيميشن السكرول للـ Desktop
+  const width = useTransform(scrollY, [0, 100], ["94%", "70%"]);
+  const backgroundColor = useTransform(scrollY, [0, 100], ["rgba(15, 23, 42, 0.5)", "rgba(15, 23, 42, 0.9)"]);
 
   const links = [
-    { name: 'home', path: '/' },
-    { name: 'all doctors', path: '/doctors' },
-    { name: 'about', path: '/about' },
-    { name: 'contact', path: '/contact' },
+    { name: 'الرئيسية', path: '/', icon: <IconHome size={22}/> },
+    { name: 'الأطباء', path: '/doctors', icon: <IconStethoscope size={22}/> },
+    { name: 'عنا', path: '/about', icon: <IconInfoCircle size={22}/> },
+    { name: 'تواصل', path: '/contact', icon: <IconPhone size={22}/> },
   ];
 
   const logOut = () => {
     localStorage.removeItem('token');
     setToken(null);
     nav('/login');
+    setIsMobileMenuOpen(false);
   };
 
-  useEffect(() => {
-    if (!token) nav('/login');
-  }, [token]);
-
   return (
-    <motion.nav
-      initial={{ y: -50 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="fixed w-full bg-[#F2FCF4] z-50 px-4 md:px-12 gap-2 lg:px-16 py-4 flex items-center justify-between shadow-sm"
-    >
-      <Link to="/">
-        <img src={assets.admin_logo} alt="Logo" className="w-24 md:w-36 lg:w-40" />
-      </Link>
-
-      {/* Desktop Menu */}
-      <div className="hidden md:flex items-center gap-6 border border-gray-200 px-4 py-2 rounded-full">
-        {links.map((link, idx) => {
-          const isActive = link.path === location.pathname;
-          return (
-            <Link
-              key={idx}
-              to={link.path}
-              className="relative px-6 py-2 font-semibold capitalize text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              {isActive && (
-                <motion.span
-                  layoutId="nav-pill"
-                  className="absolute inset-0 bg-[#6ED7D6] rounded-full -z-10"
-                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                />
-              )}
-              {link.name}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Desktop Profile */}
-      <div className="hidden md:flex items-center relative">
-        {token && (
-          <div className="relative flex items-center gap-2 group cursor-pointer">
-            <img
-              src={assets.doctor_icon}
-              alt="Doctor"
-              className="w-10 h-10 rounded-full border border-gray-200"
-            />
-            <ChevronDown className="text-gray-500" />
-            {/* Dropdown menu */}
-            <div className="absolute right-0 w-44 rounded-md top-full mt-2 bg-white shadow-lg z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-              <Link
-                to="/my-profile"
-                className="block text-gray-700 px-4 py-2 hover:bg-gray-100"
-              >
-                Profile
-              </Link>
-              <Link
-                to="/my-appointment"
-                className="block text-gray-700 px-4 py-2 hover:bg-gray-100"
-              >
-                My Appointment
-              </Link>
-              <p
-                onClick={logOut}
-                className="text-gray-700 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              >
-                Logout
-              </p>
+    <>
+      {/* --- Main Navbar --- */}
+      <div className="fixed top-4 left-0 w-full flex justify-center z-[100] px-4 pointer-events-none">
+        <motion.nav
+          style={{ width: window.innerWidth > 768 ? width : "95%", backgroundColor }}
+          className="pointer-events-auto backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2.5rem] flex items-center justify-between px-3 py-2 transition-all duration-500 overflow-hidden"
+        >
+          {/* Logo Section */}
+          <Link to="/" className="flex items-center gap-2 group ml-2 lg:ml-4">
+            <div className="w-10 h-10 bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+              <IconStethoscope className="text-white w-6 h-6" />
             </div>
-          </div>
-        )}
-        {!token && (
-          <Link to="/login">
-            <button className="px-2 md:px-6 py-2 text-white bg-blue-600 rounded-full text-sm hover:bg-blue-700 transition">
-              Create Account
-            </button>
+            <span className="text-white font-black text-xl hidden sm:block">MED<span className="text-cyan-400">IC</span></span>
           </Link>
+
+          {/* Desktop Links (Hidden on Mobile) */}
+          <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/5">
+            {links.map((link) => {
+              const isActive = link.path === location.pathname;
+              return (
+                <Link key={link.path} to={link.path}>
+                  <motion.div className={`relative px-5 py-2.5 rounded-full text-sm font-bold transition-colors ${!isActive ? 'text-white' : 'text-[green] hover:text-white'}`}>
+                    <span className="relative z-10">{link.name}</span>
+                    {isActive && (
+                      <motion.div layoutId="active-pill" className="absolute inset-0 bg-cyan-500/20 border border-cyan-500/30 rounded-full" transition={{ type: "spring", bounce: 0.3, duration: 0.6 }} />
+                    )}
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Right Section (Auth + Toggle) */}
+          <div className="flex items-center gap-2 lg:gap-4 mr-2">
+            {token && (
+              <div className="w-10 h-10 rounded-full border-2 border-cyan-500/50 p-0.5 hidden sm:block">
+                <img src="https://ui-avatars.com/api/?name=Ahmed&background=06b6d4&color=fff" className="w-full h-full rounded-full" alt="user" />
+              </div>
+            )}
+            
+            {!token && (
+              <Link to="/login" className="hidden sm:block">
+                <button className="bg-cyan-500 text-slate-950 px-6 py-2 rounded-full font-black text-xs uppercase tracking-wider">دخول</button>
+              </Link>
+            )}
+
+            {/* Mobile Menu Toggle Button (Visible ONLY on Mobile) */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden w-11 h-11 flex items-center justify-center bg-white/10 text-white rounded-full active:scale-90 transition-transform"
+            >
+              <IconMenu2 size={24} />
+            </button>
+          </div>
+        </motion.nav>
+      </div>
+
+      {/* --- Mobile Responsive Sidebar (The Missing Piece) --- */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* Background Blur Overlay */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[110] md:hidden"
+            />
+
+            {/* Side Drawer Content */}
+            <motion.div 
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-[80%] bg-slate-900 z-[120] md:hidden p-8 flex flex-col shadow-2xl border-l border-white/10"
+              dir="rtl"
+            >
+              <div className="flex items-center justify-between mb-12">
+                <div className="flex items-center gap-2">
+                   <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center"><IconStethoscope size={18} className="text-white"/></div>
+                   <span className="text-white font-black text-2xl">MEDIC</span>
+                </div>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="text-slate-400 bg-white/5 p-2 rounded-full"><IconX size={24}/></button>
+              </div>
+
+              {/* Mobile Links List */}
+              <nav className="flex flex-col gap-3">
+                {links.map((link) => (
+                  <Link 
+                    key={link.path} 
+                    to={link.path} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-4 p-5 rounded-3xl font-bold text-lg transition-all ${
+                      location.pathname === link.path ? 'bg-cyan-500 text-slate-950' : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    {link.icon} {link.name}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Mobile Auth Button */}
+              <div className="mt-auto">
+                {token ? (
+                  <button onClick={logOut} className="w-full flex items-center justify-center gap-3 p-5 bg-rose-500/10 text-rose-400 rounded-[2rem] font-bold border border-rose-500/20 active:scale-95 transition-all">
+                    <IconLogout /> تسجيل خروج
+                  </button>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className="w-full p-5 bg-cyan-500 text-slate-950 rounded-[2rem] font-black text-xl shadow-xl shadow-cyan-500/20 active:scale-95 transition-all">دخول العيادة</button>
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
-      </div>
-
-      {/* Mobile Menu Button */}
-      <div className="md:hidden flex items-center">
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          {mobileMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
-        </button>
-      </div>
-
-      {/* Mobile Overlay */}
-      {mobileMenuOpen && (
-        <motion.div
-          className="fixed inset-0 bg-black/30 z-40 md:hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Mobile Menu */}
-      <motion.div
-        className={`absolute top-0 right-0 h-[100vh] w-3/5 bg-white shadow-md flex flex-col md:hidden z-50 transform transition-transform duration-300 ${
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex justify-end p-4">
-          <button onClick={() => setMobileMenuOpen(false)}>
-            <X className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        <div className="flex flex-col flex-1">
-          {links.map((link, idx) => (
-            <Link
-              key={idx}
-              to={link.path}
-              className={`px-6 py-4 border-b border-gray-100 font-semibold capitalize ${
-                link.path === location.pathname ? 'text-blue-600' : 'text-gray-700'
-              }`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
-
-          {token && (
-            <div className="mt-6 border-t border-gray-100">
-              <Link
-                to="/my-profile"
-                className="block px-6 py-4 text-gray-700 hover:bg-gray-100"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Profile
-              </Link>
-              <Link
-                to="/my-appointment"
-                className="block px-6 py-4 text-gray-700 hover:bg-gray-100"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                My Appointment
-              </Link>
-              <p
-                onClick={() => { logOut(); setMobileMenuOpen(false); }}
-                className="block px-6 py-4 text-gray-700 hover:bg-gray-100 cursor-pointer"
-              >
-                Logout
-              </p>
-            </div>
-          )}
-
-          {!token && (
-            <Link
-              to="/login"
-              className="mt-6 mx-6 py-3 text-center text-white bg-blue-600 rounded-full hover:bg-blue-700 transition"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Create Account
-            </Link>
-          )}
-        </div>
-      </motion.div>
-    </motion.nav>
+      </AnimatePresence>
+    </>
   );
 }
 
